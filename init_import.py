@@ -4,7 +4,7 @@ from excel_data import ExcelDataHandler
 from url_builder import URLBuilder
 from response_from_ms import ResponseFromMS
 from process_ms_response import MSResponseHandler
-from create_pages import CreatePageHandler
+from aem_connector import AEMConnector
 from time import time
 import datetime
 
@@ -49,7 +49,7 @@ def main():
     # URL Generation Validation
     # print(f"Endpoint template {api_config['ms_endpoint']}")
     count = 0
-    for excel_row in data:
+    for excel_row in data[:5]:
         try:
             builder = URLBuilder(
                 url_template=api_config['ms_endpoint'],
@@ -70,10 +70,10 @@ def main():
                 processed_response = handler.get_processed_json()
                 # print(f"processed response {processed_response}")
                 try:
-                    aem_repsonse = CreatePageHandler(
+                    aem_repsonse = AEMConnector(
                         endpoint_url=api_config['aem_endpoint'],
                         payload=processed_response
-                    ).execute()
+                    ).connect()
                     print(f"AEM response {aem_repsonse}")
                 except Exception as e:
                     print(f"\n❌ CreatePageHandler failed: {str(e)}")
