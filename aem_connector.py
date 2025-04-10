@@ -14,7 +14,7 @@ class AEMConnector:
     - timeout (int): Timeout in seconds (default: 10)
     """
     
-    def __init__(self, endpoint_url: str, payload: Union[list, dict], timeout: int = 10):
+    def __init__(self, endpoint_url: str, username: str, password: str, payload: Union[list, dict], timeout: int = 10):
         if not isinstance(endpoint_url, str) or not endpoint_url.startswith(('http://', 'https://')):
             raise ValueError("Invalid endpoint URL format")
             
@@ -22,6 +22,8 @@ class AEMConnector:
             raise TypeError("Payload must be a string")
             
         self.endpoint = endpoint_url
+        self.username = username
+        self.password = password
         self.payload = payload
         self.timeout = timeout
         self.response_template = {
@@ -37,7 +39,7 @@ class AEMConnector:
         try:
             response = requests.post(
                 self.endpoint,
-                auth=HTTPBasicAuth('admin', 'admin'),
+                auth=HTTPBasicAuth(self.username, self.password),
                 json=self.payload,
                 timeout=self.timeout,
                 headers={

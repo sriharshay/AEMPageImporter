@@ -1,19 +1,12 @@
 import pandas as pd
-import yaml
+import datetime
 from excel_data import ExcelDataHandler
 from url_builder import URLBuilder
 from response_from_ms import ResponseFromMS
 from process_ms_response import MSResponseHandler
 from aem_connector import AEMConnector
 from time import time
-import datetime
-
-def load_config():
-    try:
-        with open('config.yaml', 'r') as f:
-            return yaml.safe_load(f)
-    except FileNotFoundError:
-        raise SystemExit("Error: config.yaml file not found")
+from config_loader import YAMLLoader
 
 def validate_data(data, columns):
     if not data:
@@ -28,17 +21,17 @@ def validate_data(data, columns):
 
 def main():
     start_time = time()
-    config = load_config()
-    excel_config = config.get('excel', {})
-    api_config = config.get('api', {})
+    config = YAMLLoader().getConfig()
+    excel_file_path = config['excel']['file_path']
+    excel_columns = config['excel']['columns']
     try:
         # Excel Data Validation
         handler = ExcelDataHandler(
-            file_path=excel_config.get('file_path'),
-            columns=excel_config.get('columns', [])
+            file_path=excel_file_path,
+            columns=excel_columns
         )
         data = handler.read_data()
-        validate_data(data, excel_config.get('columns', []))
+        validate_data(data, excel_columns)
         records = len(data)
         print("\n✅ Excel data validation successful!")
         print(f"   Found {records} rows")
@@ -47,12 +40,12 @@ def main():
         raise SystemExit(f"\n❌ ExcelDataHandler failed: {str(e)}")
     
     # URL Generation Validation
-    # print(f"Endpoint template {api_config['ms_endpoint']}")
+    # print(f"Endpoint template {config['ms']['endpoint']}")
     count = 0
     for excel_row in data[:5]:
         try:
             builder = URLBuilder(
-                url_template=api_config['ms_endpoint'],
+                url_template=config['ms']['endpoint'],
                 excel_row=excel_row
             )
             url = builder.build_url()
@@ -71,7 +64,9 @@ def main():
                 # print(f"processed response {processed_response}")
                 try:
                     aem_repsonse = AEMConnector(
-                        endpoint_url=api_config['aem_endpoint'],
+                        endpoint_url=config['aem']['endpoint'],
+                        username=config['aem']['username'],
+                        password=config['aem']['password'],
                         payload=processed_response
                     ).connect()
                     print(f"AEM response {aem_repsonse}")

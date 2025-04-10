@@ -2,7 +2,9 @@ excel:
   file_path: "excel.xlsx"
   columns:
     - "ID"
-    - "Name"
-api:
-  ms_endpoint: "https://www.endpoint.com?dataid=<ID>&typeId=1&testName=<Name>&interfaceId=3"
-  aem_endpoint: "http://localhost:4502/bin/create-article.json"
+ms:
+  endpoint: "https://www.endpoint.com?dataid=<ID>&typeId=1&testName=<Name>&interfaceId=3"
+aem:
+  endpoint: "http://localhost:4502/bin/create-article.json"
+  username: "un"
+  password: "pwd"

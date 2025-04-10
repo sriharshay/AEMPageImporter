@@ -3,7 +3,7 @@
     ```
     pip install requests pandas openpyxl pyyaml bs4
     ```
-2. Update the [config.yaml](config.yaml)
+2. Update the [config.yaml](config.yaml), if needed update the [config_loader.py](config_loader.py)
 3. Start the import process 
     ```
     python init_import.py config.yaml
