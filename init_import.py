@@ -41,16 +41,14 @@ def main():
     
     # URL Generation Validation
     # print(f"Endpoint template {config['ms']['endpoint']}")
-    count = 0
-    for excel_row in data[:5]:
+    for idx, excel_row in enumerate(data[:5]):
         try:
             builder = URLBuilder(
                 url_template=config['ms']['endpoint'],
                 excel_row=excel_row
             )
             url = builder.build_url()
-            count = count + 1
-            print(f"\nProcessing {count} record out of {records}")
+            print(f"\nProcessing {idx + 1} record out of {records}")
             print(f"URL: {url}")
             try:
                 response = ResponseFromMS(

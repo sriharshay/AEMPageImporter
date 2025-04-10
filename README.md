@@ -6,7 +6,7 @@
 2. Update the [config.yaml](config.yaml), if needed update the [config_loader.py](config_loader.py)
 3. Start the import process 
     ```
-    python init_import.py config.yaml
+    python init_import.py 
     ```
 4. Import process can be limited to only few excel entries with by updating the for loop 
    ``` data to 'data[:5]' ``` in [init_import.py](init_import.py)

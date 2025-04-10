@@ -9,7 +9,6 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/init_import.py",
-            "args": ["config.yaml"],
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
