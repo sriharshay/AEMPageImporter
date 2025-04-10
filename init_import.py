@@ -6,7 +6,7 @@ from response_from_ms import ResponseFromMS
 from process_ms_response import MSResponseHandler
 from aem_connector import AEMConnector
 from time import time
-from config_loader import YAMLLoader
+from config_loader import ConfigLoader
 
 def validate_data(data, columns):
     if not data:
@@ -21,9 +21,9 @@ def validate_data(data, columns):
 
 def main():
     start_time = time()
-    config = YAMLLoader().getConfig()
-    excel_file_path = config['excel']['file_path']
-    excel_columns = config['excel']['columns']
+    config = ConfigLoader()
+    excel_file_path = config.excel.get('file_path')
+    excel_columns = config.excel.get('columns')
     try:
         # Excel Data Validation
         handler = ExcelDataHandler(
@@ -40,11 +40,11 @@ def main():
         raise SystemExit(f"\n❌ ExcelDataHandler failed: {str(e)}")
     
     # URL Generation Validation
-    # print(f"Endpoint template {config['ms']['endpoint']}")
-    for idx, excel_row in enumerate(data[:5]):
+    # print(f"Endpoint template {config.ms.get('endpoint')}")
+    for idx, excel_row in enumerate(data[:2]):
         try:
             builder = URLBuilder(
-                url_template=config['ms']['endpoint'],
+                url_template=config.ms.get('endpoint'),
                 excel_row=excel_row
             )
             url = builder.build_url()
@@ -62,9 +62,9 @@ def main():
                 # print(f"processed response {processed_response}")
                 try:
                     aem_repsonse = AEMConnector(
-                        endpoint_url=config['aem']['endpoint'],
-                        username=config['aem']['username'],
-                        password=config['aem']['password'],
+                        endpoint_url=config.aem.get('endpoint'),
+                        username=config.aem.get('username'),
+                        password=config.aem.get('password'),
                         payload=processed_response
                     ).connect()
                     print(f"AEM response {aem_repsonse}")
